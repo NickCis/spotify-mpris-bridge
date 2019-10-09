@@ -38,27 +38,50 @@ async function runCommand(command) {
   }
 }
 
-function main() {
-  const ws = new WebSocket('ws://localhost:8079', ['mpris-service']);
+function connect(port = 8079) {
+  return new Promise((rs, rj) => {
+    const ws = new WebSocket(`ws://localhost:${port}`, ['mpris-service']);
 
-  ws.addEventListener('open', () => {
-    ws.send('hello');
+    ws.addEventListener('open', () => {
+      console.log('Connected successfully');
+      rs(ws);
+    });
+
+    ws.addEventListener('message', event => {
+      const json = JSON.parse(event.data);
+
+      switch (json.type) {
+        case 'playpause':
+          runCommand('play-pause');
+          break;
+
+        default:
+          runCommand(json.type);
+          break;
+      }
+    });
+
+    ws.addEventListener('error', e => {
+      rj(e);
+    });
   });
+}
 
-  ws.addEventListener('message', event => {
-    console.log(event.data);
-    const json = JSON.parse(event.data);
-
-    switch (json.type) {
-      case 'playpause':
-        runCommand('play-pause');
-        break;
-
-      default:
-        runCommand(json.type);
-        break;
-    }
-  });
+async function main() {
+  try {
+    const ws = await connect();
+    const handleError = e => {
+      console.log('Something happend:', e);
+      ws.removeEventListener('error', handleError);
+      main();
+    };
+    ws.addEventListener('error', handleError);
+  } catch (e) {
+    console.log('Failed', e);
+    setTimeout(() => {
+      main();
+    }, 5000);
+  }
 }
 
 main();

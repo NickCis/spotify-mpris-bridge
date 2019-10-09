@@ -22,15 +22,15 @@ wsServer = new WebSocketServer({
   autoAcceptConnections: false,
 });
 
-function isAllowedOrigin(origin) {
-  console.log('isAllowedOrigin', origin);
+function isAllowedOrigin(req) {
+  console.log('origin', req.origin);
   return true;
 }
 
 const connections = [];
 
 wsServer.on('request', req => {
-  if (!isAllowedOrigin(req.origin)) {
+  if (!isAllowed(req)) {
     req.reject();
     return;
   }
@@ -44,16 +44,6 @@ wsServer.on('request', req => {
     switch (msg.type) {
       case 'utf8':
         console.log('Received Message:', msg.utf8Data);
-        // connection.sendUTF(msg.utf8Data);
-        break;
-
-      case 'binary':
-        console.log(
-          'Received Binary Message of',
-          msg.binaryData.length,
-          'bytes'
-        );
-        // connection.sendBytes(msg.binaryData);
         break;
 
       default:
@@ -62,7 +52,7 @@ wsServer.on('request', req => {
     }
   });
 
-  conn.on('close', function(reasonCode, description) {
+  conn.on('close', (reasonCode, description) => {
     console.log(`Peer ${conn.remoteAddress} disconnected.`);
     const index = connections.indexOf(conn);
 
@@ -72,7 +62,6 @@ wsServer.on('request', req => {
 
 ['next', 'previous', 'pause', 'playpause', 'stop', 'play'].forEach(type => {
   player.on(type, (...args) => {
-    console.log('Event:', type, args);
     const msg = JSON.stringify({
       type,
       args,
