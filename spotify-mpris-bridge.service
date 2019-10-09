@@ -1,0 +1,7 @@
+[Unit]
+Description=Spotify MPRIS Bridge
+
+[Service]
+Type=dbus
+BusName=org.mpris.MediaPlayer2.spotify-web-player
+ExecStart=node /opt/spotify-mpris-bridge/server.js
