@@ -1,0 +1,16 @@
+{
+  "name": "dbus-bridge",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "format": "prettier --write src/**/*.js"
+  },
+  "dependencies": {
+    "mpris-service": "^2.1.0",
+    "websocket": "^1.0.30"
+  },
+  "devDependencies": {
+    "prettier": "^1.18.2"
+  }
+}
