@@ -22,7 +22,7 @@ wsServer = new WebSocketServer({
   autoAcceptConnections: false,
 });
 
-function isAllowedOrigin(req) {
+function isAllowed(req) {
   console.log('origin', req.origin);
   return true;
 }
