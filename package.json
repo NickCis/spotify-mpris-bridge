@@ -1,16 +1,18 @@
 {
-  "name": "dbus-bridge",
+  "name": "spotify-mpris-bridge",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "format": "prettier --write {background.js,manifest.json,server.js}"
+    "format": "prettier --write {background.js,manifest.json,server.js,build.js}",
+    "build": "web-ext build -o -i prettier.config.js server.js spotify-mpris-bridge.service yarn.lock"
   },
   "dependencies": {
     "mpris-service": "^2.1.0",
     "websocket": "^1.0.30"
   },
   "devDependencies": {
-    "prettier": "^1.18.2"
+    "prettier": "^1.18.2",
+    "web-ext": "^3.2.0"
   }
 }
